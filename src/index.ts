@@ -97,7 +97,7 @@ gltfLoader.load(
     instantTrackerGroup.add(gltf.scene);
     gltf.scene.visible = false;
     gltf.scene.scale.set(0.15, 0.25, 0.25);
-    gltf.scene.position.set(0, -0.2, 0);
+    // gltf.scene.position.set(0, -0.2, 0);
 
     const spotLight = new THREE.SpotLight(0xffffff);
     spotLight.position.set(0, 3, 0); // Set the position of the spotlight
@@ -129,7 +129,7 @@ gltfLoader.load(
 // Create a buffer geometry for the particles
 const particlesGeometry1 = new THREE.BufferGeometry();
 
-const particleCount1 = 100000;
+const particleCount1 = 200000;
 const positions1 = new Float32Array(particleCount1 * 3);
 const colors1 = new Float32Array(particleCount1 * 3);
 
@@ -164,13 +164,17 @@ particlesGeometry1.setAttribute(
 particlesGeometry1.setAttribute("color", new THREE.BufferAttribute(colors1, 3));
 
 const particlesMaterial2 = new THREE.PointsMaterial({
-  size: 0.005,
+  size: 0.05,
   //@ts-ignore
   vertexColors: THREE.VertexColors,
 });
 
 const particles1 = new THREE.Points(particlesGeometry1, particlesMaterial2);
-scene.add(particles1);
+particles1.rotation.set(Math.PI / 2, 0, 0);
+particles1.scale.set(0.5, 0.5, 0.01);
+//particles1.position.set(1, 0, 0);
+particles1.visible = false;
+instantTrackerGroup.add(particles1);
 
 // Particle system parameters
 const particleCount = 10000; // Adjust the number of particles as desired
@@ -279,7 +283,9 @@ const placeButton =
 placeButton.addEventListener("click", () => {
   hasPlaced = true;
   mymodel.visible = true;
+  playSound();
   particles.visible = false;
+  particles1.visible = true;
 
   //add fanisko text
 
@@ -351,27 +357,47 @@ imageBtn.addEventListener("click", () => {
   });
 });
 
-// video capture
-// const videoBtn =
-//   document.getElementById("video") || document.createElement("div");
-// let isRecording = false;
-// ZapparVideoRecorder.createCanvasVideoRecorder(canvas, {}).then((recorder) => {
-//   videoBtn.addEventListener("click", () => {
-//     if (!isRecording) {
-//       isRecording = true;
-//       recorder.start();
-//     } else {
-//       isRecording = false;
-//       recorder.stop();
-//     }
-//   });
+// ADDING SOUND
 
-//   recorder.onComplete.bind(async (res) => {
-//     ZapparSharing({
-//       data: await res.asDataURL(),
-//     });
-//   });
-// });
+// Create an AudioContext
+//@ts-expect-error
+const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+// Create an AudioBufferSourceNode
+const audioSource = audioContext.createBufferSource();
+
+// Load an audio file (replace 'audio-file.mp3' with your audio file's path)
+fetch("../assets/music.mp3")
+  .then((response) => response.arrayBuffer())
+  .then((buffer) => {
+    return audioContext.decodeAudioData(buffer);
+  })
+  .then(async (audioBuffer) => {
+    // Set the audio buffer of the source node
+    audioSource.buffer = audioBuffer;
+
+    // Connect the source node to the AudioContext's destination (speakers)
+    await audioSource.connect(audioContext.destination);
+    audioContext.decodeAudioData(
+      new Buffer(audioBuffer),
+      (decodedData) => {
+        // Success
+        console.log("Audio decoded successfully", decodedData);
+      },
+      (error) => {
+        // Error
+        console.error("Error decoding audio data", error);
+      }
+    );
+  })
+  .catch((error) => {
+    console.error("Error loading audio: ", error);
+  });
+
+// Function to play the sound
+function playSound() {
+  audioSource.start();
+}
 
 // Use a function to render our scene as usual
 function render(): void {
@@ -389,6 +415,13 @@ function render(): void {
       positions[i + 1] = -5; // Reset particles' Y position when they go beyond the screen
     }
   }
+  particles1.rotation.z += 0.1;
+  // Update particles1 to move in a circular path
+  const radius = 2; // Adjust the radius of the circular path
+  const speed = 0.01; // Adjust the speed of rotation
+  particles1.position.x = radius * Math.cos(speed * performance.now());
+  particles1.position.z = radius * Math.sin(speed * performance.now());
+
   particlesGeometry.getAttribute("position").needsUpdate = true;
   // particles.rotation.z += 0.001;
 
