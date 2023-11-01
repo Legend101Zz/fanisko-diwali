@@ -4,12 +4,12 @@
 // In this example we track a 3D model using instant world tracking
 
 import * as THREE from "three";
+import { Howl, Howler } from "howler";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
 import * as ZapparThree from "@zappar/zappar-threejs";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import ZapparSharing from "@zappar/sharing";
 import * as ZapparVideoRecorder from "@zappar/video-recorder";
-const model = new URL("../assets/diwali_3d_poster.glb", import.meta.url).href;
 import "./index.css";
 import { FontLoader } from "three/examples/jsm/loaders/FontLoader";
 // The SDK is supported on many different browsers, but there are some that
@@ -31,6 +31,8 @@ if (ZapparThree.browserIncompatible()) {
 // the assets are downloaded. You can use this if it's helpful, or use
 // your own loading UI - it's up to you :-)
 const manager = new ZapparThree.LoadingManager();
+const model = new URL("../assets/diwali_3d_poster.glb", import.meta.url).href;
+const music = new URL("../assets/music.mp3", import.meta.url).href;
 
 // Construct our ThreeJS renderer and scene as usual
 const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -215,52 +217,11 @@ particlesGeometry.setAttribute(
   new THREE.Float32BufferAttribute(colors, 3)
 );
 
-// spiral
+// ADDING SOUND
 
-// const particlesGeometry2 = new THREE.BufferGeometry();
-
-// const particleCount2 = 1000000;
-// const positions2 = new Float32Array(particleCount * 3);
-// const colors2 = new Float32Array(particleCount * 3);
-
-// const particleColor2 = new THREE.Color(0xffa500); // Fire color
-
-// const spiral = (t: any) => {
-//   const r = t; // Radius increases linearly with time
-//   const theta = 50 * t; // Angle increases linearly with time
-//   const x = r * Math.cos(theta);
-//   const y = r * Math.sin(theta);
-//   const z = (Math.random() - 0.5) * 2;
-//   return new THREE.Vector3(x, y, z);
-// };
-
-// for (let i = 0; i < particleCount2; i++) {
-//   const t = i / (particleCount2 - 1); // Linearly distribute points along the spiral
-//   const point = spiral(t);
-
-//   positions2[i * 3] = point.x;
-//   positions2[i * 3 + 1] = point.y;
-//   positions2[i * 3 + 2] = point.z;
-
-//   colors2[i * 3] = particleColor2.r;
-//   colors2[i * 3 + 1] = particleColor2.g;
-//   colors2[i * 3 + 2] = particleColor2.b;
-// }
-
-// particlesGeometry2.setAttribute(
-//   "position",
-//   new THREE.BufferAttribute(positions2, 3)
-// );
-// particlesGeometry2.setAttribute("color", new THREE.BufferAttribute(colors2, 3));
-
-// const particlesMaterial2 = new THREE.PointsMaterial({
-//   size: 0.05,
-//   //@ts-ignore
-//   vertexColors: THREE.VertexColors,
-// });
-
-// const particles2 = new THREE.Points(particlesGeometry2, particlesMaterial2);
-// instantTrackerGroup.add(particles2);
+const sound = new Howl({
+  src: [music],
+});
 
 // Let's add some lighting, first a directional light above the model pointing down
 const directionalLight = new THREE.DirectionalLight("white", 0.8);
@@ -283,7 +244,7 @@ const placeButton =
 placeButton.addEventListener("click", () => {
   hasPlaced = true;
   mymodel.visible = true;
-  playSound();
+  sound.play();
   particles.visible = false;
   particles1.visible = true;
 
@@ -356,48 +317,6 @@ imageBtn.addEventListener("click", () => {
     data: url,
   });
 });
-
-// ADDING SOUND
-
-// Create an AudioContext
-//@ts-expect-error
-const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-
-// Create an AudioBufferSourceNode
-const audioSource = audioContext.createBufferSource();
-
-// Load an audio file (replace 'audio-file.mp3' with your audio file's path)
-fetch("../assets/music.mp3")
-  .then((response) => response.arrayBuffer())
-  .then((buffer) => {
-    return audioContext.decodeAudioData(buffer);
-  })
-  .then(async (audioBuffer) => {
-    // Set the audio buffer of the source node
-    audioSource.buffer = audioBuffer;
-
-    // Connect the source node to the AudioContext's destination (speakers)
-    await audioSource.connect(audioContext.destination);
-    audioContext.decodeAudioData(
-      new Buffer(audioBuffer),
-      (decodedData) => {
-        // Success
-        console.log("Audio decoded successfully", decodedData);
-      },
-      (error) => {
-        // Error
-        console.error("Error decoding audio data", error);
-      }
-    );
-  })
-  .catch((error) => {
-    console.error("Error loading audio: ", error);
-  });
-
-// Function to play the sound
-function playSound() {
-  audioSource.start();
-}
 
 // Use a function to render our scene as usual
 function render(): void {

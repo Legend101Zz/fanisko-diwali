@@ -13,9 +13,11 @@
     "@zappar/sharing": "^1.1.7",
     "@zappar/video-recorder": "^1.0.1",
     "@zappar/zappar-threejs": "2.0.1",
+    "howler": "^2.2.4",
     "three": "^0.137.0"
   },
   "devDependencies": {
+    "@types/howler": "^2.2.10",
     "@types/three": "^0.138.0",
     "buffer": "^6.0.3",
     "gh-pages": "^3.1.0",
