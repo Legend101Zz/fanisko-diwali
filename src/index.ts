@@ -125,6 +125,53 @@ gltfLoader.load(
 //   return `${hexColor}1`;
 // }
 
+//GALAXY
+// Create a buffer geometry for the particles
+const particlesGeometry1 = new THREE.BufferGeometry();
+
+const particleCount1 = 100000;
+const positions1 = new Float32Array(particleCount1 * 3);
+const colors1 = new Float32Array(particleCount1 * 3);
+
+const particleColor1 = new THREE.Color(0xffa500); // Fire color
+
+const spiral = (t: any) => {
+  const r = t; // Radius increases linearly with time
+  const theta = 50 * t; // Angle increases linearly with time
+  const x = r * Math.cos(theta);
+  const y = r * Math.sin(theta);
+  const z = (Math.random() - 0.5) * 2;
+  return new THREE.Vector3(x, y, z);
+};
+
+for (let i = 0; i < particleCount1; i++) {
+  const t = i / (particleCount1 - 1); // Linearly distribute points along the spiral
+  const point = spiral(t);
+
+  positions1[i * 3] = point.x;
+  positions1[i * 3 + 1] = point.y;
+  positions1[i * 3 + 2] = point.z;
+
+  colors1[i * 3] = particleColor1.r;
+  colors1[i * 3 + 1] = particleColor1.g;
+  colors1[i * 3 + 2] = particleColor1.b;
+}
+
+particlesGeometry1.setAttribute(
+  "position",
+  new THREE.BufferAttribute(positions1, 3)
+);
+particlesGeometry1.setAttribute("color", new THREE.BufferAttribute(colors1, 3));
+
+const particlesMaterial2 = new THREE.PointsMaterial({
+  size: 0.005,
+  //@ts-ignore
+  vertexColors: THREE.VertexColors,
+});
+
+const particles1 = new THREE.Points(particlesGeometry1, particlesMaterial2);
+scene.add(particles1);
+
 // Particle system parameters
 const particleCount = 10000; // Adjust the number of particles as desired
 const particleSize = 0.006; // Adjust the size of the particles
