@@ -33,7 +33,7 @@ if (ZapparThree.browserIncompatible()) {
 const manager = new ZapparThree.LoadingManager();
 const model = new URL("../assets/diwali_3d_poster.glb", import.meta.url).href;
 const music = new URL("../assets/music.mp3", import.meta.url).href;
-const share = new URL("../assets/arrow.png", import.meta.url).href;
+
 // Construct our ThreeJS renderer and scene as usual
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 const scene = new THREE.Scene();
@@ -313,66 +313,9 @@ imageBtn.addEventListener("click", () => {
   camera.rotation.copy(originalCameraRotation);
 
   // Take snapshot
-  ZapparSharing(
-    {
-      data: url,
-      fileNamePrepend: "Zappar",
-      shareUrl: "www.zappar.com",
-      shareTitle: "Hello World!",
-      shareText: "Hello World!",
-
-      onSave: () => {
-        console.log("Image was saved");
-      },
-      onShare: () => {
-        console.log("Share button was pressed");
-      },
-      onClose: () => {
-        console.log("Dialog was closed");
-      },
-    },
-    {
-      buttonImage: {
-        pointerEvents: "none",
-        display: "flex",
-        justifyContent: "center",
-        margin: "auto",
-        width: "0px",
-        height: "40px",
-        backgroundImage: share,
-      },
-      saveShareAnchor: {
-        display: "flex",
-        width: "70px",
-        height: "70px",
-        marginTop: "2.5%",
-        marginLeft: "5%",
-        marginRight: "5%",
-      },
-    },
-    {
-      SAVE: "Fanisko",
-      SHARE: "SHARE",
-      NowOpenFilesAppToShare: "Now open files app to share",
-      TapAndHoldToSave: "Tap and hold the image<br/>to save to your Photos app",
-    }
-  );
-
-  // Capture the element by its ID
-  const zapparSaveButton = document.getElementById("zapparSaveButton");
-  if (zapparSaveButton) {
-    //Create a new SVG image content
-    const newSVGContent = `
-    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="64" height="64" viewBox="0 0 40 40">
-      <path d="M 12.5 1 C 11.125 1 10 2.125 10 3.5 C 10 3.980469 10.144531 4.425781 10.378906 4.808594 L 8.054688 7 L 5.949219 7 C 5.714844 5.863281 4.703125 5 3.5 5 C 2.125 5 1 6.125 1 7.5 C 1 8.875 2.125 10 3.5 10 C 4.703125 10 5.714844 9.136719 5.949219 8 L 8.054688 8 L 10.40625 10.148438 C 10.152344 10.539063 10 11 10 11.5 C 10 12.875 11.125 14 12.5 14 C 13.875 14 15 12.875 15 11.5 C 15 10.125 13.875 9 12.5 9 C 11.984375 9 11.5 9.15625 11.101563 9.429688 L 9 7.507813 L 9 7.476563 L 11.0625 5.539063 C 11.472656 5.824219 11.964844 6 12.5 6 C 13.875 6 15 4.875 15 3.5 C 15 2.125 13.875 1 12.5 1 Z M 12.5 2 C 13.335938 2 14 2.664063 14 3.5 C 14 4.335938 13.335938 5 12.5 5 C 11.664063 5 11 4.335938 11 3.5 C 11 2.664063 11.664063 2 12.5 2 Z M 3.5 6 C 4.335938 6 5 6.664063 5 7.5 C 5 8.335938 4.335938 9 3.5 9 C 2.664063 9 2 8.335938 2 7.5 C 2 6.664063 2.664063 6 3.5 6 Z M 12.5 10 C 13.335938 10 14 10.664063 14 11.5 C 14 12.335938 13.335938 13 12.5 13 C 11.664063 13 11 12.335938 11 11.5 C 11 10.664063 11.664063 10 12.5 10 Z"></path>
-     
-    <text x="50%" y="65%" dominant-baseline="middle" text-anchor="middle" fill="black" font-size="10" font-weight="bold">SHARE</text>
-    </svg>
-  `;
-    // Set the new content for the zapparSaveButton
-    zapparSaveButton.innerHTML = newSVGContent;
-    // Change the src attribute to the new image URL
-  }
+  ZapparSharing({
+    data: url,
+  });
 });
 
 // Use a function to render our scene as usual
