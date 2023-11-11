@@ -102,10 +102,10 @@ gltfLoader.load(
     // gltf.scene.position.set(0, -0.2, 0);
 
     const spotLight = new THREE.SpotLight(0xffffff);
-    spotLight.position.set(0, 3, 0); // Set the position of the spotlight
+    spotLight.position.set(0, 5, 0); // Set the position of the spotlight
     spotLight.target = mymodel; // Optionally, you can set a target for the spotlight
-    spotLight.angle = Math.PI / 8; // Set the spotlight cone angle
-    spotLight.intensity = 2; // Set the intensity of the spotlight
+    //spotLight.angle = Math.PI / 8; // Set the spotlight cone angle
+    spotLight.intensity = 0.8; // Set the intensity of the spotlight
 
     gltf.scene.add(spotLight);
     // console.log(gltf.scene);
@@ -224,13 +224,13 @@ const sound = new Howl({
 });
 
 // Let's add some lighting, first a directional light above the model pointing down
-const directionalLight = new THREE.DirectionalLight("white", 0.8);
-directionalLight.position.set(0, 5, 0);
-directionalLight.lookAt(0, 0, 0);
-instantTrackerGroup.add(directionalLight);
+// const directionalLight = new THREE.DirectionalLight("white", 0.8);
+// directionalLight.position.set(0, 5, 0);
+// directionalLight.lookAt(0, 0, 0);
+// instantTrackerGroup.add(directionalLight);
 
 // And then a little ambient light to brighten the model up a bit
-const ambientLight = new THREE.AmbientLight("white", 0.4);
+const ambientLight = new THREE.AmbientLight("white", 0.8);
 instantTrackerGroup.add(ambientLight);
 
 // When the experience loads we'll let the user choose a place in their room for
@@ -265,7 +265,7 @@ placeButton.addEventListener("click", () => {
   );
 
   function createText(font: any) {
-    const textGeometry = new TextGeometry("FANISKO \n WISHES YOU", {
+    const textGeometry = new TextGeometry("Pondi Gang \n WISHES YOU", {
       font: font,
       size: 0.2, // Adjust the size as needed
       height: 0.05, // Adjust the thickness as needed
@@ -274,7 +274,7 @@ placeButton.addEventListener("click", () => {
     const textMaterial = new THREE.MeshBasicMaterial({ color: 0xf4a146 }); // Adjust the text color as needed
     const textMesh = new THREE.Mesh(textGeometry, textMaterial);
     textMesh.scale.set(0.8, 0.8, 0.8);
-    textMesh.position.x = -1;
+    textMesh.position.x = -1.7;
     textMesh.position.y = 2;
     // Position the text within your scene
     // textMesh.position.set(-1, 0.2, -3); // Adjust the position as needed
